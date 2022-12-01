@@ -66,6 +66,8 @@ builder::builder(const var &a) {
 		// It should be removed when it is used
 	} else if (a.current_state == var::standalone_var) {
 		assert(a.block_var != nullptr);
+		if (a.block_var->preferred_name == "")
+                        a.block_var->preferred_name = util::find_variable_name((void*)((dyn_var<int>&)a).addr());
 		block::var_expr::Ptr var_expr = std::make_shared<block::var_expr>();
 		var_expr->static_offset = offset;
 

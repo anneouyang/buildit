@@ -33,16 +33,18 @@ void var_namer::visit(stmt_block::Ptr a) {
 			decl_stmt::Ptr prev_decl = find_hoisted_decl(hoisted_decls, so);
 			int detach_init = false;
 			if (!prev_decl) {	
-				if (b->decl_var->preferred_name != "") {
-					b->decl_var->var_name = b->decl_var->preferred_name + "_" + std::to_string(var_counter);
-				} else {
-					b->decl_var->var_name = "var" + std::to_string(var_counter);
-				}
 				var_counter++;
 				var_replacer replacer;
 				replacer.to_replace = b->decl_var;
 				replacer.offset_to_replace = b->decl_var->static_offset;
 				ast->accept(&replacer);
+				
+				if (b->decl_var->preferred_name != "") {
+					// b->decl_var->var_name = b->decl_var->preferred_name + "_" + std::to_string(var_counter);
+					b->decl_var->var_name = b->decl_var->preferred_name;
+				} else {
+					b->decl_var->var_name = "var" + std::to_string(var_counter);
+				}
 				// We only want to hoist those decls that do occur multiple times
 				if (is_single_decl(ast, so)) {
 					new_stmts.push_back(stmt);
@@ -98,6 +100,8 @@ void var_namer::finalize_hoists(block::Ptr a) {
 }
 void var_replacer::visit(var_expr::Ptr a) {
 	if (a->var1->static_offset == offset_to_replace) {
+		if (to_replace->preferred_name == "" && a->var1->preferred_name != "")
+			to_replace->preferred_name = a->var1->preferred_name;
 		a->var1 = to_replace;
 	}
 }
