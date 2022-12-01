@@ -9,6 +9,8 @@
 // Include the BuildIt types
 using builder::dyn_var;
 using builder::static_var;
+
+// Define the TinyEngine types
 const char q31_t_s[] = "q31_t";
 using q31_t = builder::name<q31_t_s>;
 const char q15_t_s[] = "q15_t";
